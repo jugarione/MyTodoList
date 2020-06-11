@@ -8,11 +8,32 @@ import androidx.room.PrimaryKey;
 public class Task {
 
     @PrimaryKey
-    public int tid;
+    private int tid;
 
     @ColumnInfo(name = "task_title")
-    public String taskTitle;
+    private String taskTitle;
 
     @ColumnInfo(name = "task_description")
-    public String taskDescription;
+    private String taskDescription;
+
+    public Task(String taskTitle, String taskDescription) {
+        this.taskTitle = taskTitle;
+        this.taskDescription = taskDescription;
+    }
+
+    public void setTid(int tid) {
+        this.tid = tid;
+    }
+
+    public int getTid() {
+        return tid;
+    }
+
+    public String getTaskTitle() {
+        return taskTitle;
+    }
+
+    public String getTaskDescription() {
+        return taskDescription;
+    }
 }
