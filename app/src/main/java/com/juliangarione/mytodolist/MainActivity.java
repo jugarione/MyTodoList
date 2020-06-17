@@ -1,9 +1,11 @@
 package com.juliangarione.mytodolist;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
@@ -54,6 +57,25 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                switch (direction) {
+                    case ItemTouchHelper.LEFT:
+                taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(MainActivity.this, "Task Deleted", Toast.LENGTH_SHORT).show();
+                break;
+                    case ItemTouchHelper.RIGHT:
+                        //TODO dar la funcion de enviar al dia siguiente.
+                        Toast.makeText(MainActivity.this, "Ya va a volver, no pacho nada", Toast.LENGTH_SHORT).show();
+                        break;
+                }}}).attachToRecyclerView(recyclerView);
 
     }
 
