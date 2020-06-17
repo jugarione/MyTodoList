@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -68,14 +71,16 @@ public class MainActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
-                taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-                Toast.makeText(MainActivity.this, "Task Deleted", Toast.LENGTH_SHORT).show();
-                break;
+                        taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
+                        Toast.makeText(MainActivity.this, "Task Deleted", Toast.LENGTH_SHORT).show();
+                        break;
                     case ItemTouchHelper.RIGHT:
                         //TODO dar la funcion de enviar al dia siguiente.
                         Toast.makeText(MainActivity.this, "Ya va a volver, no pacho nada", Toast.LENGTH_SHORT).show();
                         break;
-                }}}).attachToRecyclerView(recyclerView);
+                }
+            }
+        }).attachToRecyclerView(recyclerView);
 
     }
 
@@ -83,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_OK){
+        if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_OK) {
             String title = data.getStringExtra(AddTaskActivity.EXTRA_TITLE);
             String description = data.getStringExtra(AddTaskActivity.EXTRA_DESCRIPTION);
 
@@ -94,4 +99,24 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Task not saved", Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_all_tasks:
+                taskViewModel.deleteAllTask();
+                Toast.makeText(MainActivity.this, "All Notes Deleted", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
+
