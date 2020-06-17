@@ -7,13 +7,11 @@ import androidx.room.PrimaryKey;
 @Entity
 public class Task {
 
-    @PrimaryKey
-    private int tid;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
 
-    @ColumnInfo(name = "task_title")
     private String taskTitle;
 
-    @ColumnInfo(name = "task_description")
     private String taskDescription;
 
     public Task(String taskTitle, String taskDescription) {
@@ -21,12 +19,12 @@ public class Task {
         this.taskDescription = taskDescription;
     }
 
-    public void setTid(int tid) {
-        this.tid = tid;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public int getTid() {
-        return tid;
+    public int getId() {
+        return id;
     }
 
     public String getTaskTitle() {

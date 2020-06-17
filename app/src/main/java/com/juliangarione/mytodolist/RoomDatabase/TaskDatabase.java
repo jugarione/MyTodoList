@@ -9,7 +9,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Task.class}, version = 1)
+@Database(entities = {Task.class}, version = 2)
 public abstract class TaskDatabase extends RoomDatabase {
 
     private static TaskDatabase instance;
@@ -20,7 +20,7 @@ public abstract class TaskDatabase extends RoomDatabase {
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(),
                     TaskDatabase.class, "task_database")
-                    // fallbackToDestructiveMigration eliminates the data, great for database changues whiout version changue
+                    // fallbackToDestructiveMigration eliminates the data, great for database changues whitout version migrations
                     .fallbackToDestructiveMigration()
                     .addCallback(roomCallback)
                     .build();

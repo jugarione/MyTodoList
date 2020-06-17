@@ -2,10 +2,7 @@ package com.juliangarione.mytodolist;
 
 import android.app.Application;
 import android.os.AsyncTask;
-
 import androidx.lifecycle.LiveData;
-import androidx.room.Delete;
-
 import com.juliangarione.mytodolist.RoomDatabase.Task;
 import com.juliangarione.mytodolist.RoomDatabase.TaskDao;
 import com.juliangarione.mytodolist.RoomDatabase.TaskDatabase;
@@ -35,7 +32,7 @@ public class TaskRepository {
     }
 
     public void deleteAllNotes() {
-        new DeleteAllNotesAsyncTask(taskDao).execute();
+        new DeleteAllTasksAsyncTask(taskDao).execute();
     }
 
     public LiveData<List<Task>> getAllTask() {
@@ -85,10 +82,10 @@ public class TaskRepository {
         }
     }
 
-    private static class DeleteAllNotesAsyncTask extends AsyncTask<Void, Void, Void> {
+    private static class DeleteAllTasksAsyncTask extends AsyncTask<Void, Void, Void> {
         private TaskDao taskDao;
 
-        private DeleteAllNotesAsyncTask(TaskDao taskDao) {
+        private DeleteAllTasksAsyncTask(TaskDao taskDao) {
             this.taskDao = taskDao;
         }
 
