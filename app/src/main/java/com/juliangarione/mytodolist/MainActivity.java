@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.icu.text.CaseMap;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,6 +29,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public static final int ADD_TASK_REQUEST = 1;
+    public static final int EDIT_TASK_REQUEST = 2;
     private TaskViewModel taskViewModel;
 
     @Override
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         buttonAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
+                Intent intent = new Intent(MainActivity.this, AddEditTaskActivity.class);
                 startActivityForResult(intent, ADD_TASK_REQUEST);
             }
         });
@@ -82,6 +85,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }).attachToRecyclerView(recyclerView);
 
+        adapter.setOnItemClickListener(new TaskAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Task task) {
+                Intent intent = new Intent(MainActivity.this, AddEditTaskActivity.class);
+
+                intent.putExtra(AddEditTaskActivity.EXTRA_ID, task.getId());
+                intent.putExtra(AddEditTaskActivity.EXTRA_TITLE, task.getTaskTitle());
+                intent.putExtra(AddEditTaskActivity.EXTRA_DESCRIPTION, task.getTaskDescription());
+                startActivityForResult(intent, EDIT_TASK_REQUEST);
+
+            }
+        });
+
     }
 
     @Override
@@ -89,13 +105,29 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_OK) {
-            String title = data.getStringExtra(AddTaskActivity.EXTRA_TITLE);
-            String description = data.getStringExtra(AddTaskActivity.EXTRA_DESCRIPTION);
+            String title = data.getStringExtra(AddEditTaskActivity.EXTRA_TITLE);
+            String description = data.getStringExtra(AddEditTaskActivity.EXTRA_DESCRIPTION);
 
             Task task = new Task(title, description);
             taskViewModel.insert(task);
             Toast.makeText(this, "Task saved", Toast.LENGTH_SHORT).show();
-        } else {
+        } else if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
+            int id = data.getIntExtra(AddEditTaskActivity.EXTRA_ID, -1);
+
+            if (id == -1) {
+                Toast.makeText(this, "Task can't be updated", Toast.LENGTH_SHORT).show();
+            }
+
+        String title = data.getStringExtra(AddEditTaskActivity.EXTRA_TITLE);
+        String description = data.getStringExtra(AddEditTaskActivity.EXTRA_DESCRIPTION);
+
+        Task task = new Task(title, description);
+        task.setId(id);
+        taskViewModel.update(task);
+
+        Toast.makeText(this, "Task updated", Toast.LENGTH_SHORT).show();
+
+    } else {
             Toast.makeText(this, "Task not saved", Toast.LENGTH_SHORT).show();
         }
     }

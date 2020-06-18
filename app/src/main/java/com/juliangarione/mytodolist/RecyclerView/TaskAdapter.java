@@ -16,12 +16,13 @@ import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     private List<Task> tasks = new ArrayList<>();
+    private OnItemClickListener listener;
 
     @NonNull
     @Override
     public TaskHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    View itemView = LayoutInflater.from(parent.getContext())
-            .inflate(R.layout.task_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.task_item, parent, false);
         return new TaskHolder(itemView);
     }
 
@@ -42,11 +43,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         notifyDataSetChanged();
     }
 
-    public Task getTaskAt(int position){
+    public Task getTaskAt(int position) {
         return tasks.get(position);
     }
 
-    class TaskHolder extends  RecyclerView.ViewHolder {
+    class TaskHolder extends RecyclerView.ViewHolder {
         private TextView textViewTitle;
         private TextView textViewDescription;
 
@@ -54,7 +55,25 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.task_title);
             textViewDescription = itemView.findViewById(R.id.task_description);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (listener != null && position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(tasks.get(position));
+                    }
+                }
+            });
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Task task);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
 }
